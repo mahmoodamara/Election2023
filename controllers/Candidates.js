@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 router.use(bodyParser.json());
 const  db  = require('../db');
+const app = express();
+
+app.use(cors());
 
 
 
@@ -19,6 +22,8 @@ router.get('/candidates/:city', (req, res) => {
   });
 
 
+
+
 router.get('/candidates', (req, res) => {
     const q = "SELECT * FROM candidates";
     db.query(q, (err, data) => {
@@ -29,29 +34,36 @@ router.get('/candidates', (req, res) => {
 
 
 router.post('/candidates/addCandidates', (req, res) => {
-    const q = "INSERT INTO candidates (`name`,`votes`,`city`) VALUES (?, ?, ?)";
-    const values = [
-        req.body.name,
-        req.body.votes,
-        req.body.city
-    ];
-    db.query(q, values, (err, data) => {
-        if (err) return res.json(err);
-        return res.json("success");
-    });
-});
+  const q1 = "SELECT * FROM candidates WHERE name = ? AND city = ?";
+  var f = 0 ; 
+  db.query(q1, [req.body.name, req.body.city], (err, data) => {
+    if (err) {
+      return err;
+    }
+    else{
+    if(data.length == 0){
+      const q = "INSERT INTO candidates (`name`,`votes`,`city`) VALUES (?, ?, ?)";
+      const values = [
+          req.body.name,
+          req.body.votes,
+          req.body.city
+      ];
+      db.query(q, values, (err, data) => {
+          if (err) return res.json(err);
+          return res.json(data);
+      });
 
-router.post('/candidates/addCandidates', (req, res) => {
-    const q = "INSERT INTO candidates (`name`,`votes`,`city`) VALUES (?, ?, ?)";
-    const values = [
-        req.body.name,
-        req.body.votes,
-        req.body.city
-    ];
-    db.query(q, values, (err, data) => {
-        if (err) return res.json(err);
-        return res.json("success");
-    });
+    }else{
+      console.log('Candidate already exists')
+
+    }
+     
+
+    }
+  });
+
+
+  
 });
 
 

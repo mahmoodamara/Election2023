@@ -1,7 +1,10 @@
 
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 8000;
+const cors = require('cors'); // Import the cors package
+app.use(cors());
+
 
 const candidates = require('./controllers/Candidates');
 const adds = require('./controllers/adds');

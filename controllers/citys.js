@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 router.use(bodyParser.json());
 const  db  = require('../db');
+const app = express();
 
+app.use(cors());
 
 router.get('/citys', (req, res) => {
     const q = "SELECT * FROM citys";
@@ -54,6 +56,17 @@ router.put('/citys/:id', (req, res) => {
       }
   
       return res.json({ message: 'City updated successfully' });
+    });
+  });
+
+  router.put('/citysvotes/:id', (req, res) => {
+    const candidateId = req.params.id;
+    const updateQuery = 'UPDATE citys SET votes = votes + 1 WHERE id = ?';
+    db.query(updateQuery, [candidateId], (err, result) => {
+      if (err) {
+        return res.json(err);
+      }
+      return res.json({ message: 'Votes incremented successfully' });
     });
   });
 

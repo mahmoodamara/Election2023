@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 router.use(bodyParser.json());
 const  db  = require('../db');
+const app = express();
+app.use(cors());
 
 router.get('/adds', (req, res) => {
     const q = "SELECT * FROM adds";
